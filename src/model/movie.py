@@ -11,15 +11,11 @@ class Movie:
 	A sample Movie class
 	"""
 
-	# iter_id = itertools.count()
-
-	def __init__(self, id, name, year_date, genre, rate, actor_id):#todo optional all = None
-		self.id = id
-		self.name = name
+	def __init__(self, title=None, year_date=None, description=None, budget_in_millions=None):#todo optional all = None
+		self.title = title
 		self.year_date = year_date
-		self.genre = genre
-		self.rate = rate
-		self.actor_id = actor_id
+		self.description = description
+		self.budget_in_millions = budget_in_millions
 
 	@property
 	def title(self):
