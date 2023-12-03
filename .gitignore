@@ -10,4 +10,6 @@ config.py
 #venv
 venv/
 
+#log
+**/*.log
 

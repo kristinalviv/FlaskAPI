@@ -11,36 +11,36 @@ class Movie:
 	A sample Movie class
 	"""
 
-	def __init__(self, title=None, year_date=None, description=None, budget_in_millions=None):#todo optional all = None
+	def __init__(self, title=None, year_date=None, description=None, budget_in_millions=None):
 		self.title = title
 		self.year_date = year_date
 		self.description = description
 		self.budget_in_millions = budget_in_millions
 
-	@property
-	def title(self):
-		return '{} - ({})'.format(self.name, self.year_date)
-
-	@property.setter
-	def name(self, id, new_name):
-		if isinstance(new_name) == 'str' and len(new_name) < 200:
-			with conn:
-				c.execute(f"UPDATE Movie SET name = {new_name} WHERE id = {id}")
-				self.name = new_name
-
-	@property.setter
-	def name(self, new_genre):
-		if isinstance(new_genre) == 'str' and len(new_genre) < 200:
-			with conn:
-				c.execute(f"UPDATE Movie SET genre = {new_genre} WHERE id = {id}")
-				self.genre = new_genre
-
-	@property.setter
-	def actor_id(self, new_actor_id):
-		if isinstance(new_actor_id) == 'int':
-			with conn:
-				c.execute(f"ALTER Movie SET actor_id = {new_actor_id} WHERE id = {id}")
-				self.actor_id = new_actor_id
+	# @property
+	# def title(self):
+	# 	return '{} - ({})'.format(self.name, self.year_date)
+	#
+	# @title.setter
+	# def name(self, id, new_name):
+	# 	if isinstance(new_name) == 'str' and len(new_name) < 200:
+	# 		with conn:
+	# 			c.execute(f"UPDATE Movie SET name = {new_name} WHERE id = {id}")
+	# 			self.name = new_name
+	#
+	# @title.setter
+	# def name(self, new_genre):
+	# 	if isinstance(new_genre) == 'str' and len(new_genre) < 200:
+	# 		with conn:
+	# 			c.execute(f"UPDATE Movie SET genre = {new_genre} WHERE id = {id}")
+	# 			self.genre = new_genre
+	#
+	# @title.setter
+	# def actor_id(self, new_actor_id):
+	# 	if isinstance(new_actor_id) == 'int':
+	# 		with conn:
+	# 			c.execute(f"ALTER Movie SET actor_id = {new_actor_id} WHERE id = {id}")
+	# 			self.actor_id = new_actor_id
 
 	def __repr__(self):
 		return "Movie(?, ?, ?, ?, ?)".format(self.name, self.year_date, self.genre, self.rate, self.actor_id)

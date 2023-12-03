@@ -1,7 +1,3 @@
---todo update insert statements due to new DDL and for all 5 tables --DONE
-
---if reformat is needed - press option+command and view if result ok.....
-
 INSERT INTO Movies (title, year_date, description, budget_in_millions)
 VALUES
     ("Forrest Gump", 1994, "Drama", 330.2),

@@ -4,6 +4,10 @@ from datetime import datetime
 
 from config import mysql_user, mysql_pass, host, port
 
+logging.basicConfig(filename='logging.log',
+					filemode='a')
+logging.getLogger().setLevel(logging.INFO)
+
 
 class MySQLConnector:
 	"""
@@ -39,45 +43,43 @@ class MySQLConnector:
 											  passwd=self.password,
 											  connect_timeout=5)
 			logging.log(logging.INFO, f'{datetime.now()} - opened connection.')
-		# todo check if connection is still alive else reopen --changed a little, implemented in execute
-		return self.connection
-		#return self.connection.cursor() #then within context manager in 72 line __enter__ executed - QQQ
+		return self
 
-	def execute_query(self, query):
+	def execute_query(self, query): #todo get by id, get all, delete by id,
 		try:
-			if not self.connection.open:
+			if not self.connection or not self.connection.open:
 				logging.log(logging.INFO, 'Connection is closed. Trying to reconnect')
-				c = self.connect()
-				if not c.connection.open:
-					logging.log('Could not connect.')
+				self.connect()
 			logging.log(logging.INFO, 'Connection is open. Executing query')
 			with self.connection.cursor() as c:
 				c.execute(query)
-				c.commit()
-				return c.fetchall()
+				res = c.fetchall()
+				return res
 		except pymysql.err.OperationalError as e:
-			logging.log(logging.INFO, e)
+			logging.log(logging.INFO, 'MySQL error: ', e)
+		except pymysql.err.ProgrammingError as e:
+			logging.log(logging.INFO, f'Data error: {e.args[0]} error id - "{e.args[1]}" error message')
 		except Exception as e:
-			logging.log(logging.INFO, e)
-
+			logging.log(logging.INFO, 'Error:', e)
 
 	def close(self):
 		if self.connection:
 			self.connection.close()
+			self.connection = None
 			logging.log(logging.INFO, f'{datetime.now()} - connection closed.')
+			print('connection closed.')
 
 
 if __name__ == "__main__":
-	print(mysql_user)
-	# with MySQLConnector(mysql_user, mysql_pass) as new_conn: - QQQ
-	new_conn = MySQLConnector(mysql_user, mysql_pass)
-	print(new_conn)
-	test = new_conn.connect()
-	print(test.cursor().connection)
-	print(test.cursor().connection.open)
-	new_conn.execute_query('SHOW DATABASES;')
-	new_conn.close()
-	print(new_conn)
-	print(test.cursor().connection)
-	print(test.cursor().connection.open)
+	with MySQLConnector(mysql_user, mysql_pass) as new_conn:
+		print(new_conn)
+		print(new_conn.connection)
+		print(new_conn.connection.open)
+		res = new_conn.execute_query('select * from movies_db.MovieCharacter limit 10;')
+		print(res)
 
+
+# INFO:root:2023-12-03 13:46:10.441129 - opened connection.
+# INFO:root:Connection is open. Executing query
+# INFO:root:Data error: 1146 error id - "Table 'movies_db.moviecharacter' doesn't exist" error message
+# INFO:root:2023-12-03 13:46:10.442908 - connection closed.
