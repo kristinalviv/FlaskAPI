@@ -1,4 +1,4 @@
-INSERT INTO Movies (title, year_date, description, budget_in_millions)
+INSERT INTO movies_db.Movies (title, year_date, description, budget_in_millions)
 VALUES
     ("Forrest Gump", 1994, "Drama", 330.2),
     ("3 Idiots", 2009, "Drama", 2.4),
@@ -31,10 +31,8 @@ VALUES
     ("Deadpool", 2016, "Action", 363.6),
     ("Drishyam", 2015, "Mystery", 3.0);
 
-
-
-INSERT INTO Actors
-(first_name, last_name, birthday)
+INSERT INTO movies_db.Actors
+(firstname, lastname, birthday)
 VALUES
     ("Chaitanya", "Baweja", '1963-01-01'),
     ("Mary", "Cooper", '1966-01-01'),
@@ -59,29 +57,7 @@ VALUES
     ("Amy", "Farah Fowler", '1987-05-23'),
     ("Marlon", "Crafford", '1999-11-30');
 
-
-
-INSERT INTO Ratings
-(score, movie_id, user_id, review, create_date)
-VALUES
-    (6.4, 17, 5, 'much liked', '2002-11-21'),
-    (5.6, 19, 1, 'Just awful...', '2010-12-01'), (6.3, 22, 14, 'Worth it', '2009-11-03'),
-    (5.1, 21, 17, 'Wow:))' '2017-05-13'), (5.0, 5, 5, 'nice for view at the late evening:)', '2003-05-22'),
-    (6.5, 21, 5), (8.5, 30, 13), (9.7, 6, 4), (8.5, 24, 12, 'recommended for sure'),
-    (9.9, 14, 9, 'amazing for kids!!!!', '2020-05-11'), (8.7, 26, 14), (9.9, 6, 10),
-    (5.1, 30, 6, 'Incredible!!', '2003-05-22'), (5.4, 18, 16, 'You would never guess the end...', '2010-09-28'),
-    (6.2, 6, 20), (7.3, 21, 19), (8.1, 17, 18, 'for one time watch'), (5.0, 7, 2),
-    (9.8, 23, 3), (8.0, 22, 9, 'definitely recommend', '2022-09-10'), (8.5, 11, 13, 'My top list first!!)', '2023-05-03'),
-    (5.0, 5, 11), (5.7, 8, 2), (7.6, 25, 19, 'Most romantic film ever', '2019-12-02'), (5.2, 18, 15), (9.7, 13, 3),
-    (5.8, 18, 8), (5.8, 30, 15, 'You should see it'), (9.5, 30, 20, 'I cried for whole film', '2010-12-01'),
-    (8.4, 21, 18), (6.2, 23, 16, 'Short story long(', '2010-12-01'), (7.0, 10, 18),
-    (8.9, 3, 19), (6.4, 12, 2), (7.8, 12, 22, 'Just awful...', '2010-12-01'), (9.9, 15, 13),
-    (7.5, 20, 17), (9.0, 25, 6), (8.5, 23, 2), (5.3, 30, 17, 'The best ever actors...', '2010-12-01'),
-    (6.4, 5, 10), (8.1, 5, 21, 'Loved the songs', '2010-12-01'), (5.7, 22, 1), (6.3, 28, 4),
-    (9.8, 13, 1);
-
-
-INSERT INTO Users
+INSERT INTO movies_db.Users
 (user_name, user_login, user_pass)
 VALUES
     ("Sonya", "son123", '1111'),
@@ -105,8 +81,38 @@ VALUES
     ("Lev", "levV", 'lev_123_pass'),
     ("Nazar", "nazar_23", 'nazar_23!');
 
+INSERT INTO movies_db.Ratings
+(score, movie_id, user_id, review, create_date)
+VALUES
+    (6.4, 17, 5, 'much liked', '2002-11-21'), (5.6, 19, 1, 'Just awful...', '2010-12-01'),
+    (6.3, 22, 14, 'Worth it', '2009-11-03'), (5.1, 21, 17, 'Wow:))', '2017-05-13'),
+    (5.0, 5, 5, 'nice for view at the late evening:)', '2003-05-22'),
+    (9.9, 14, 9, 'amazing for kids!!!!', '2020-05-11'),
+    (5.1, 30, 6, 'Incredible!!', '2003-05-22'),
+    (5.4, 18, 16, 'You would never guess the end...', '2010-09-28'),
+    (8.0, 22, 9, 'definitely recommend', '2022-09-10'),
+    (7.6, 25, 19, 'Most romantic film ever', '2019-12-02'),
+    (9.5, 30, 20, 'I cried for whole film', '2010-12-01'),
+    (5.3, 30, 17, 'The best ever actors...', '2010-12-01'),
+    (7.8, 12, 19, 'Just awful...', '2010-12-01'), (8.1, 5, 3, 'Loved the songs', '2010-12-01'),
+    (8.5, 11, 13, 'My top list first!!)', '2023-05-03'),
+    (6.2, 23, 16, 'Short story long(', '2010-12-01');
 
-INSERT INTO MovieCharacter
+INSERT INTO movies_db.Ratings
+(score, movie_id, user_id)
+VALUES
+    (6.5, 21, 5), (8.5, 30, 13), (9.7, 6, 4), (6.2, 6, 20), (7.3, 21, 19),  (5.0, 7, 2),
+    (8.7, 26, 14), (9.9, 6, 10), (9.8, 23, 3), (5.0, 5, 11), (5.7, 8, 2),  (5.2, 18, 15), (9.7, 13, 3),
+    (5.8, 18, 8), (8.4, 21, 18),  (7.0, 10, 18), (8.9, 3, 19), (6.4, 12, 2),  (9.9, 15, 13),
+    (7.5, 20, 17), (9.0, 25, 6), (8.5, 23, 2), (6.4, 5, 10),  (5.7, 22, 1), (6.3, 28, 4), (9.8, 13, 1);
+
+INSERT INTO movies_db.Ratings
+(score, movie_id, user_id, review)
+VALUES
+    (8.5, 24, 12, 'recommended for sure'), (5.8, 30, 15, 'You should see it'),
+    (8.1, 17, 18, 'for one time watch');
+
+INSERT INTO movies_db.MovieCharacter
 (movie_id, actor_id, character_name)
 VALUES
     (17, 8, 'Jerry'),
@@ -115,7 +121,7 @@ VALUES
     (3, 11, 'Nicolas'),
     (5, 5, 'Mask'),
     (7, 5, 'Vinni'),
-    (9, 5, 'Samantha'),
+    (9, 3, 'Samantha'),
     (13, 7, 'Tom'),
     (14, 1, 'Anthony'),
     (4, 21, 'Rob'),

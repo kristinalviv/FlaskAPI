@@ -1,22 +1,20 @@
-#CRUD for movie - to do create class and methods
-
-#annotation (decorator)
-#@dataclass (static methods, e.g. getdata, nonstatc - crud)
-
-import itertools
 from src.db.connections import MySQLConnector
+from config import mysql_user, mysql_pass, host, port
 
+#todo - @dataclass
 class Movie:
 	"""
 	A sample Movie class
 	"""
+
+	table_name = 'Movies'
 
 	def __init__(self, title=None, year_date=None, description=None, budget_in_millions=None):
 		self.title = title
 		self.year_date = year_date
 		self.description = description
 		self.budget_in_millions = budget_in_millions
-
+	#
 	# @property
 	# def title(self):
 	# 	return '{} - ({})'.format(self.name, self.year_date)
@@ -24,50 +22,54 @@ class Movie:
 	# @title.setter
 	# def name(self, id, new_name):
 	# 	if isinstance(new_name) == 'str' and len(new_name) < 200:
-	# 		with conn:
-	# 			c.execute(f"UPDATE Movie SET name = {new_name} WHERE id = {id}")
-	# 			self.name = new_name
+	# 		query = f"UPDATE Movies SET name = {new_name} WHERE id = {id}"
+	# 		establish_conn(mysql_user, mysql_pass).execute_query(query)
+	# 		self.name = new_name #todo - is it needed?
 	#
 	# @title.setter
-	# def name(self, new_genre):
-	# 	if isinstance(new_genre) == 'str' and len(new_genre) < 200:
-	# 		with conn:
-	# 			c.execute(f"UPDATE Movie SET genre = {new_genre} WHERE id = {id}")
-	# 			self.genre = new_genre
+	# def description(self, new_description):
+	# 	if isinstance(new_description) == 'str' and len(new_description) < 200:
+	# 		query = f"UPDATE Movies SET description = {new_description} WHERE id = {id}"
+	# 		establish_conn(mysql_user, mysql_pass).execute_query(query)
+	# 		self.description = new_description
 	#
 	# @title.setter
-	# def actor_id(self, new_actor_id):
-	# 	if isinstance(new_actor_id) == 'int':
-	# 		with conn:
-	# 			c.execute(f"ALTER Movie SET actor_id = {new_actor_id} WHERE id = {id}")
-	# 			self.actor_id = new_actor_id
+	# def budget_id(self, new_budget):
+	# 	if isinstance(new_budget) == 'float' | isinstance(new_budget) == 'int':
+	# 		query = f"ALTER Movies SET budget_in_millions = {new_budget} WHERE id = {id}"
+	# 		establish_conn(mysql_user, mysql_pass).execute(query)
+	# 		self.budget_in_millions = new_budget
 
 	def __repr__(self):
-		return "Movie(?, ?, ?, ?, ?)".format(self.name, self.year_date, self.genre, self.rate, self.actor_id)
+		return f"{Movie.table_name}(?, ?, ?, ?, ?)".format(self.title, self.year_date, self.description, self.budget_in_millions)
+
+	#todo - insert_film should return id
+
+	#todo - insert_film should insert value form self instead of parameters
+	# def insert_film(self) -> str:    - use self.name
+
+	def insert_film(self, name: str, year_date: int, description: str, budget: float) -> str:
+		with MySQLConnector as conn:
+			query = f"""INSERT INTO {Movie.table_name} (title, year_date, description, budget_in_millions)
+					VALUES ("{name}", {year_date}, "{description}", {budget})"""
+			result = conn.execute_query(query) #todo if execute returns id and return it
+			conn.connection.commit() # todo - self id assign
+			return result
+
+	def delete_film(self, movie_id: int):
+		with MySQLConnector as conn:
+			result = conn.delete_by_id(Movie.table_name, movie_id)
+			conn.connection.commit()
+			return result
+
+	# @staticmethod
+	# def get_by_id
+
+	# def update
+
+	# create user, actors, ratings modules with classes
+	# create moviecharacter - as a methods within created classes
 
 
-	# def execute(self, query):
-	# 	if not self.connect: self.connect()
-	# 	with self.connect.cursor() as my_cursor:
-	# 		my_cursor.execute(query)
-	# 		self.connect.commit()
-	# 		results = my_cursor.fetchall()
-	# 		for res in results:
-	# 			print(res)
-
-	def insert_film(self, name, year_date, genre, rate, actor_id):
-		# if not self.connect: self.connect() -- QQQ do I need this? should I import MySQLConnector? or in main?
-		# in tot al what proper steps to connect first and then run statements
-		with self.connect.cursor() as my_cursor:
-			my_cursor.execute(f"")
-			results = my_cursor.fetchall()
-			for res in results:
-				print(res)
-
-	# def delete_film(self, id):
 
 
-
-#QQQ - is it ok to have updates within @property and additional standart methods for insert/delete
-
-#todo CRUD all

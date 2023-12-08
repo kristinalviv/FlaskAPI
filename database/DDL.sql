@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS movies_db;
 create DATABASE IF NOT EXISTS movies_db;
 USE movies_db;
 CREATE TABLE if not exists Movies
@@ -6,7 +7,7 @@ CREATE TABLE if not exists Movies
   title VARCHAR(255) NOT NULL,
   year_date YEAR(4) NOT NULL,
   description VARCHAR(255),
-  budget_in_millions int NOT NULL
+  budget_in_millions float NOT NULL
 )
 ;
 CREATE TABLE if not exists Actors
@@ -29,9 +30,9 @@ CREATE TABLE if not exists Ratings
 (
   user_id int NOT NULL,
   movie_id int NOT NULL,
-  score int NOT NULL,
+  score float NOT NULL,
   review VARCHAR(1024),
-  create_date DATETIME DEFAULT (CURRENT_DATE),
+  create_date DATE NOT NULL DEFAULT (CURRENT_DATE),
   FOREIGN KEY(movie_id) REFERENCES Movies(movie_id),
   FOREIGN KEY(user_id) REFERENCES Users(user_id),
   PRIMARY KEY(user_id, movie_id)
@@ -45,5 +46,4 @@ CREATE TABLE if not exists MovieCharacter
   FOREIGN KEY(movie_id) REFERENCES Movies(movie_id),
   FOREIGN KEY(actor_id) REFERENCES Actors(actor_id),
   PRIMARY KEY(actor_id, movie_id)
-)
-;
+);
