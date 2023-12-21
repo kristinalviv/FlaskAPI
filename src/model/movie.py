@@ -14,33 +14,26 @@ class Movie:
 	table_name = 'Movies'
 
 	def __init__(self, title=None, year_date=None, description=None, budget_in_millions=None):
-		self.title = title
-		# self._title = title
+		self.movie_id = None
+		# self.title = title
+		self._title = title
 		self.year_date = year_date
 		self.description = description
 		self.budget_in_millions = budget_in_millions
-		self.movie_id = None
 
 	def __repr__(self):
 		return f"{db_name}.{Movie.table_name}({self.title}, {self.year_date}, " \
 			   f"{self.description}, {self.budget_in_millions}) "
 
-	# @property
-	# def title(self):
-	# 	return self._title
-	#
-	# @title.setter
-	# def title(self, new_title: str):
-	# 	if not isinstance(new_title, str) or len(new_title) > 200:
-	# 		raise ValueError(f"Provided name - {new_title} is not valid. Please enter valid and accurate film name.")
-	# 	with MySQLConnector() as conn:
-	# 		query = f"UPDATE {db_name}.{Movie.table_name} SET title='{new_title}' WHERE movie_id ={self.movie_id}"
-	# 		print(query)
-	# 		conn.execute_query(query)
-	# 		self._title = new_title
+	@property
+	def title(self):
+		return self._title
 
-	# todo - insert_film should return id - DONE
-	# todo - insert_film should insert value form self instead of parameters - DONE
+	@title.setter
+	def title(self, new_title: str):
+		if not isinstance(new_title, str) or len(new_title) > 200:
+			raise ValueError(f"Provided name - {new_title} is not valid. Please enter valid and accurate film name.")
+		self._title = new_title
 
 	def insert_film(self) -> int:
 		"""
@@ -54,7 +47,6 @@ class Movie:
 			conn.execute_query(query, commit=False)
 			movie_id = conn.execute_query('SELECT LAST_INSERT_ID()')[0][0]
 			self.movie_id = movie_id
-			# conn.connection.commit()
 			return movie_id
 
 	@classmethod
@@ -65,8 +57,12 @@ class Movie:
 		:return:
 		"""
 		with MySQLConnector() as conn:
-			res = conn.get_by_id(cls.table_name, find_id)
-			return res
+			res = conn.get_by_id(cls.table_name, entity_id=find_id)
+			if not res:
+				return None
+			movie = Movie(*res[0][1:])
+			movie.movie_id = res[0][0]
+			return movie
 
 	def delete_film(self):
 		"""
@@ -77,16 +73,14 @@ class Movie:
 			with MySQLConnector() as conn:
 				conn.delete_by_id(self.table_name, self.movie_id)
 				deleted = Movie.get_movie_by_id(self.movie_id)
+				if deleted is not None:
+					logging.log(logging.INFO, f'Delete was NOT successful. \n {deleted}')
+					raise ValueError(
+						f'Unsuccessful delete of {self.movie_id}-{self.title} movie. Please resolve an issue.')
 		except Exception as e:
 			logging.log(logging.INFO, f'Error: {e}')
 			raise e
-		if len(deleted) != 0:
-			logging.log(logging.INFO, f'Delete was NOT successful. \n {deleted}')
-			raise ValueError(f'Unsuccessful delete of {self.movie_id}-{self.title} movie. Please resolve an issue.')
-		else:
-			logging.log(logging.INFO, f'Delete successful.')
-			print('here')
-			del self  # todo - discuss additional del in main is needed
+		logging.log(logging.INFO, f'Delete successful.')
 
 	def update_movie_title(self, new_title: str):
 		if not isinstance(new_title, str) or len(new_title) > 200:
@@ -107,7 +101,7 @@ class Movie:
 	def update_movie_description(self, new_description: str):
 		if not isinstance(new_description, str) or len(new_description) > 200:
 			raise ValueError(f'Provided description - {new_description} is not valid. Please enter valid and accurate'
-				'film description.')
+							 'film description.')
 		with MySQLConnector() as conn:
 			query = f"UPDATE {db_name}.{Movie.table_name} SET description='{new_description}' WHERE movie_id ={self.movie_id}"
 			conn.execute_query(query)
@@ -115,11 +109,13 @@ class Movie:
 
 	def update_movie_budget_in_millions(self, new_budget: int):
 		if not isinstance(new_budget, int) or new_budget < 0:
-			raise ValueError(f"Provided budget - {new_budget} is not valid. Please enter valid and accurate film budget.")
+			raise ValueError(
+				f"Provided budget - {new_budget} is not valid. Please enter valid and accurate film budget.")
 		with MySQLConnector() as conn:
 			query = f"UPDATE {db_name}.{Movie.table_name} SET budget_in_millions='{new_budget}' WHERE movie_id ={self.movie_id}"
 			conn.execute_query(query)
 			self.budget_in_millions = new_budget
+
 
 def main():
 	new_movie = Movie("Forrest Gump", 1994, "Drama", 330.2)
@@ -129,12 +125,20 @@ def main():
 	movie = Movie.get_movie_by_id(new_id)
 	print(movie)
 	print(new_movie.title)
-	# new_movie.title += ' 2 version'
-	new_movie.update_movie_title(new_movie.title + ' 2')
+	new_movie.title = new_movie.title + ' 2 version'
+	# new_movie.update_movie_title(new_movie.title + ' 2')
 	print(new_movie.title)
 	new_movie.delete_film()
-	del new_movie
 
 
 if __name__ == "__main__":
 	main()
+	#todo - first task - list ratings of all movies and return min, max, avg for each movie
+	#todo - rate for each movie  - create get_all_movies as get_movie_by_id method, and the same for ratings
+	#todo - in ratings, create get rating by movie_id
+
+	#todo - second task - list ratings of all movies by years and return min, max, avg for each movie
+
+	#todo - third task - calculate film rating within actor - with use of multiprocessing pool
+	#()from multiprocessing import Pool
+	#in actors, list all films

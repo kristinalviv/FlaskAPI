@@ -69,18 +69,23 @@ class MySQLConnector:
 			logging.log(logging.INFO, f'Error: {e}')
 			raise e
 
-	def get_by_id(self, table: str = None, entity_id: int = None):
+	def get_by_id(self, table: str = None, entity_name: str = None, entity_id: int = None):
 		logging.log(logging.INFO, f'Trying to query {entity_id} ID in {table} TABLE.')
 		if not entity_id or not table:
 			raise Exception(f'Please define both TABLE and identificator. '
 							f'/n Currently TABLE is {table} and ID is {entity_id}')
-		column_name_query = f"""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-			WHERE TABLE_SCHEMA = '{db_name}' AND TABLE_NAME = '{table}' AND COLUMN_KEY = 'PRI';"""
-		column_name = self.execute_query(column_name_query)
-		column_name = column_name[0][0]
-		query = f"SELECT * FROM {db_name}.{table} where {column_name} = {entity_id}"
-		result = self.execute_query(query)
-		logging.log(logging.INFO, f'{column_name} with {entity_id} ID in {table} TABLE is {result}')
+		if entity_name is None:
+			column_name_query = f"""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+				WHERE TABLE_SCHEMA = '{db_name}' AND TABLE_NAME = '{table}' AND COLUMN_KEY = 'PRI';"""
+			column_name = self.execute_query(column_name_query)
+			column_name = column_name[0][0]
+			query = f"SELECT * FROM {db_name}.{table} where {column_name} = {entity_id}"
+			result = self.execute_query(query)
+			logging.log(logging.INFO, f'{column_name} with {entity_id} ID in {table} TABLE is {result}')
+		else:
+			query = f"SELECT * FROM {db_name}.{table} where {entity_name} = {entity_id}"
+			result = self.execute_query(query)
+			logging.log(logging.INFO, f'{entity_name} with {entity_id} ID in {table} TABLE is {result}')
 		return result
 
 	def delete_by_id(self, table: str = None, entity_id: int = None):
@@ -113,7 +118,7 @@ class MySQLConnector:
 			self.connection.close()
 			self.connection = None
 			logging.log(logging.INFO, f'{datetime.now()} - connection closed.')
-			print('connection closed.')
+			# print('connection closed.')
 
 
 if __name__ == "__main__":
